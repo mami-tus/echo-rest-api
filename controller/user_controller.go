@@ -17,11 +17,11 @@ type IUserController interface {
 }
 
 type userController struct {
-	uu usecase.IUserUseCase
+	uu usecase.IUserUsecase
 }
 
 // コンストラクター
-func NewUserController(uu usecase.IUserUseCase) IUserController {
+func NewUserController(uu usecase.IUserUsecase) IUserController {
 	return &userController{uu}
 }
 

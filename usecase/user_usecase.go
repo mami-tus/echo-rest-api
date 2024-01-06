@@ -10,22 +10,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type IUserUseCase interface {
+type IUserUsecase interface {
 	SignUp(user model.User) (model.UserResponse, error)
 	LogIn(user model.User) (string, error)
 }
 
-type userUseCase struct {
+type userUsecase struct {
 	ur repository.IUserRepository
 }
 
 // コンストラクター
-func NewUserUseCase(ur repository.IUserRepository) IUserUseCase {
-	return &userUseCase{ur}
+func NewUserUsecase(ur repository.IUserRepository) IUserUsecase {
+	return &userUsecase{ur}
 }
 
-// userUseCase型 の SignUpメソッド
-func (uu *userUseCase) SignUp(user model.User) (model.UserResponse, error) {
+// userUsecase型 の SignUpメソッド
+func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 	// パスワードをハッシュ化
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
@@ -45,7 +45,7 @@ func (uu *userUseCase) SignUp(user model.User) (model.UserResponse, error) {
 	return resUser, nil
 }
 
-func (uu *userUseCase) LogIn(user model.User) (string, error) {
+func (uu *userUsecase) LogIn(user model.User) (string, error) {
 	storedUser := model.User{}
 	// ユーザーを取得
 	if err := uu.ur.GetUserByEmail(&storedUser, user.Email); err != nil {
