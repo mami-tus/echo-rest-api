@@ -7,16 +7,26 @@ import (
 )
 
 // Go では Interface はメソッドの一覧
+/*
+インターフェース (interface)
+インターフェースは、特定の「約束」みたいなものです。Go言語におけるインターフェースは、ある特定のメソッドを持っているという「約束」を表します。
+例えば、IUserRepositoryインターフェースは、「GetUserByEmailとCreateUserという2つのメソッドを持っている」という約束です。
+*/
 type IUserRepository interface {
 	GetUserByEmail(user *model.User, email string) error
 	CreateUser(user *model.User) error
 }
 
+// 構造体は、いくつかの異なるデータ（変数）をひとまとめにしたもの
 type userRepository struct {
 	db *gorm.DB
 }
 
-// コンストラクター
+/*
+コンストラクターは、新しいオブジェクト（構造体のインスタンス）を作るための特別な関数です。
+NewUserRepository関数は、新しいuserRepositoryオブジェクトを作り、それを返します。
+これにより、データベースへの接続を持つuserRepositoryを使って作業ができるようになります。
+*/
 func NewUserRepository(db *gorm.DB) IUserRepository {
 	return &userRepository{db}
 }
