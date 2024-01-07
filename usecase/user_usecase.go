@@ -3,6 +3,7 @@ package usecase
 import (
 	"go-rest-api/model"
 	"go-rest-api/repository"
+	"go-rest-api/validator"
 	"os"
 	"time"
 
@@ -17,15 +18,20 @@ type IUserUsecase interface {
 
 type userUsecase struct {
 	ur repository.IUserRepository
+	uv validator.IUserValidator
 }
 
 // コンストラクター
-func NewUserUsecase(ur repository.IUserRepository) IUserUsecase {
-	return &userUsecase{ur}
+func NewUserUsecase(ur repository.IUserRepository, uv validator.IUserValidator) IUserUsecase {
+	return &userUsecase{ur, uv}
 }
 
 // userUsecase型 の SignUpメソッド
 func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
+	// バリデーション
+	if err := uu.uv.UserValidate(user); err != nil {
+		return model.UserResponse{}, err
+	}
 	// パスワードをハッシュ化
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
@@ -46,6 +52,10 @@ func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 }
 
 func (uu *userUsecase) LogIn(user model.User) (string, error) {
+	// バリデーション
+	if err := uu.uv.UserValidate(user); err != nil {
+		return "", err
+	}
 	storedUser := model.User{}
 	// ユーザーを取得
 	if err := uu.ur.GetUserByEmail(&storedUser, user.Email); err != nil {

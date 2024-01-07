@@ -5,14 +5,17 @@ go 1.21.4
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/joho/godotenv v1.5.1
-	github.com/labstack/echo-jwt/v4 v4.1.0  // echo-jwtとgolang-jwtのバージョン互換性のためv4.1.0を指定
+	github.com/labstack/echo-jwt/v4 v4.1.0 // echo-jwtとgolang-jwtのバージョン互換性のためv4.1.0を指定
 	github.com/labstack/echo/v4 v4.11.4
 	golang.org/x/crypto v0.17.0
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5
 )
 
+require github.com/go-ozzo/ozzo-validation/v4 v4.3.0
+
 require (
+	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect

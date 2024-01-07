@@ -3,6 +3,7 @@ package usecase
 import (
 	"go-rest-api/model"
 	"go-rest-api/repository"
+	"go-rest-api/validator"
 )
 
 type ITaskUsecase interface {
@@ -15,11 +16,12 @@ type ITaskUsecase interface {
 
 type taskUsecase struct {
 	tr repository.ITaskRepository
+	tv validator.ITaskValidator
 }
 
 // コンストラクター
-func NewTaskUsecase(tr repository.ITaskRepository) ITaskUsecase {
-	return &taskUsecase{tr}
+func NewTaskUsecase(tr repository.ITaskRepository, tv validator.ITaskValidator) ITaskUsecase {
+	return &taskUsecase{tr, tv}
 }
 
 func (tu *taskUsecase) GetAllTasks(userId uint) ([]model.TaskResponse, error) {
@@ -76,6 +78,9 @@ func (tu *taskUsecase) CreateTask(task model.Task) (model.TaskResponse, error) {
 		データベース操作が成功した後、新しいmodel.TaskResponseオブジェクトが作成され、データベースから得られたデータ（taskの内容）で初期化されています。
 		これは、クライアントに返すためのレスポンスとして構成されます。
 	*/
+	if err := tu.tv.TaskValidate(task); err != nil {
+		return model.TaskResponse{}, err
+	}
 	// タスクを作成
 	if err := tu.tr.CreateTask(&task); err != nil {
 		// エラーが発生した場合、model.TaskResponse{}（構造体のゼロ値）とエラー情報を返す
@@ -92,6 +97,9 @@ func (tu *taskUsecase) CreateTask(task model.Task) (model.TaskResponse, error) {
 }
 
 func (tu *taskUsecase) UpdateTask(task model.Task, userId uint, taskId uint) (model.TaskResponse, error) {
+	if err := tu.tv.TaskValidate(task); err != nil {
+		return model.TaskResponse{}, err
+	}
 	// タスクを更新
 	if err := tu.tr.UpdateTask(&task, userId, taskId); err != nil {
 		return model.TaskResponse{}, err
